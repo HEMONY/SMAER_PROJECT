@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --primary: 0 0% 98%;
+  --primary-foreground: 240 5.9% 10%;
+  --secondary: 240 3.7% 15.9%;
+  --secondary-foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --ring: 240 4.9% 83.9%;
+  --radius: 0.5rem;
+}
+
+body {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+.card {
+  @apply bg-gray-800/50 rounded-lg p-4 border border-gray-700/50;
+}
+
+.primary-button {
+  @apply bg-gradient-to-r from-primary-gold to-amber-500 text-black font-medium py-2 px-4 rounded-md flex items-center justify-center hover:opacity-90 transition-opacity;
+}
+
+.secondary-button {
+  @apply bg-gray-700 text-white font-medium py-2 px-4 rounded-md flex items-center justify-center hover:bg-gray-600 transition-colors;
+}
+
+.gold-text {
+  @apply text-primary-gold;
+}
+
+.bottom-nav {
+  @apply fixed bottom-0 left-0 right-0 bg-gray-900 border-t border-gray-800 flex justify-around items-center p-2 z-50;
+}
+
+.bottom-nav-item {
+  @apply flex flex-col items-center justify-center py-2 px-3 text-gray-400 text-xs;
+}
+
+.bottom-nav-item.active {
+  @apply text-primary-gold;
+}
+
+.bottom-nav-item span {
+  @apply mt-1;
+}
+
+.task-item {
+  @apply flex items-center p-3 bg-gray-800/30 rounded-lg border border-gray-700/30;
+}
+
+.task-icon {
+  @apply bg-gray-700 p-3 rounded-full mr-3 text-primary-gold;
+}
+
+.task-content {
+  @apply flex-1;
+}
+
+.task-title {
+  @apply font-medium;
+}
+
+.task-description {
+  @apply text-sm text-gray-400;
+}
