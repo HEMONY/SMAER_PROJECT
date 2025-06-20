@@ -35,7 +35,7 @@ bot.onText(/\/start/, (msg) => {
         [
           {
             text: '🌐 زيارة موقع Smart Coin',
-            url: 'http://localhost:3000'
+            url: 'https://smaer-project.onrender.com'
           }
         ]
       ]
@@ -61,7 +61,7 @@ bot.on('message', (msg) => {
         [
           {
             text: '🔗 زيارة الموقع',
-            url: 'http://localhost:3000'
+            url: 'https://smaer-project.onrender.com'
           }
         ]
       ]
