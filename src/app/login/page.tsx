@@ -31,7 +31,7 @@ export default function LoginPage() {
               <p className="text-sm text-gray-400 mb-3">
                 قم بتسجيل الدخول باستخدام حساب تيليجرام الخاص بك. سيتم إرسال رمز تحقق إلى بوت تيليجرام الخاص بنا.
               </p>
-              <Link href="/api/auth/telegram" className="primary-button w-full">
+              <Link href="/api/auth/telegram/route.js" className="primary-button w-full">
                 <FaTelegramPlane size={20} />
                 <span>تسجيل الدخول عبر تيليجرام</span>
               </Link>
