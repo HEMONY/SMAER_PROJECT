@@ -5,7 +5,7 @@ import crypto from 'crypto';
 // --- Telegram API Credentials ---
 // !!! SECURITY WARNING: Move these to environment variables (.env file) !!!
 const TELEGRAM_API_ID = '20942401'; // Provided by user
-const TELEGRAM_BOT_TOKEN = '7808906118:AAGw3YsXONFdYk8t1hlvCgnCm-8alIGpFtk'; // Provided by user
+const TELEGRAM_BOT_TOKEN = '7790436103:AAH4KwfhqwqYeeVzRwxrVhk3ZlTHkzHoP40'; // Provided by user
 
 // إعداد عميل Supabase
 const supabaseUrl = 'https://aqunpkwwvslnmuqvotyl.supabase.co';
@@ -15,7 +15,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey);
 // التحقق من صحة بيانات تيليغرام
 // Reference: https://core.telegram.org/widgets/login#checking-authorization
 function verifyTelegramData(data) {
-  if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === 'YOUR_TELEGRAM_BOT_TOKEN') {
+  if (!TELEGRAM_BOT_TOKEN || TELEGRAM_BOT_TOKEN === '7790436103:AAH4KwfhqwqYeeVzRwxrVhk3ZlTHkzHoP40') {
     console.error('Telegram Bot Token is not configured!');
     return false; // Fail verification if token is missing
   }
