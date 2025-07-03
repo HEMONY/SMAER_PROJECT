@@ -8,8 +8,8 @@ const TELEGRAM_API_ID = '20942401'; // Provided by user
 const TELEGRAM_BOT_TOKEN = '7790436103:AAH4KwfhqwqYeeVzRwxrVhk3ZlTHkzHoP40'; // Provided by user
 
 // إعداد عميل Supabase
-const supabaseUrl = 'https://aqunpkwwvslnmuqvotyl.supabase.co';
-const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFxdW5wa3d3dnNsbm11cXZvdHlsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NTQ0MDI4NCwiZXhwIjoyMDYxMDE2Mjg0fQ.CNRePcC73D5f6jq1PKDxYB95gDLvhfZwDXILlfD-huw';
+const supabaseUrl = 'https://xsxbeihsavosrxjyzmga.supabase.co';
+const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhzeGJlaWhzYXZvc3J4anl6bWdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1NjI2ODEsImV4cCI6MjA2NzEzODY4MX0.79iTU8QrexMFSrg_CesL_vOSwQ0TWxq3iN8TsVDWE-o';
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 // التحقق من صحة بيانات تيليغرام
