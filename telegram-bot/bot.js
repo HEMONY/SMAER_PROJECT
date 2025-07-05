@@ -35,7 +35,7 @@ bot.onText(/\/start/, (msg) => {
         [
           {
             text: '🌐 زيارة موقع Smart Coin',
-            url: 'https://smaer-project.onrender.com'
+            url: 'https://smart-72n3vz4ws-mohs-projects-7864830e.vercel.app/'
           }
         ]
       ]
@@ -61,7 +61,7 @@ bot.on('message', (msg) => {
         [
           {
             text: '🔗 زيارة الموقع',
-            url: 'https://smaer-project.onrender.com'
+            url: 'https://smart-72n3vz4ws-mohs-projects-7864830e.vercel.app/'
           }
         ]
       ]
