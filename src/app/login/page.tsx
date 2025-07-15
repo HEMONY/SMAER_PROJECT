@@ -1,71 +1,159 @@
-"use client";
+'use client';
 
-import { FaTelegramPlane } from 'react-icons/fa';
-import { SiTon } from 'react-icons/si';
-import Image from 'next/image';
+import { useState, useEffect, useCallback } from 'react';
+import { supabase } from '@/lib/supabase/client';
+import { FaCoins } from 'react-icons/fa';
 import Link from 'next/link';
 
-export default function LoginPage() {
+export default function DailyMiningPage() {
+  const [userId, setUserId] = useState<string | null>(null);
+  const [userBalance, setUserBalance] = useState<number | null>(null);
+  const [coinsToClaim, setCoinsToClaim] = useState(20);
+  const [lastClaimTime, setLastClaimTime] = useState<number | null>(null);
+  const [canClaim, setCanClaim] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Get user ID from localStorage
+  useEffect(() => {
+    const storedUser = localStorage.getItem('smartCoinUser');
+    if (storedUser) {
+      const userObj = JSON.parse(storedUser);
+      setUserId(userObj.id);
+
+      supabase
+        .from('users')
+        .select('balance')
+        .eq('id', userObj.id)
+        .single()
+        .then(({ data, error }) => {
+          if (data) setUserBalance(data.balance);
+        });
+    }
+  }, []);
+
+  // Check claim eligibility
+  useEffect(() => {
+    if (!userId) return;
+
+    setIsLoading(true);
+    supabase
+      .from('users')
+      .select('mining_rate, last_mining')
+      .eq('id', userId)
+      .single()
+      .then(({ data, error }) => {
+        if (data) {
+          setCoinsToClaim(data.mining_rate || 20);
+          const last = data.last_mining ? new Date(data.last_mining).getTime() : null;
+          if (last) {
+            setLastClaimTime(last);
+            const now = Date.now();
+            const diff = now - last;
+            const limit = 24 * 60 * 60 * 1000;
+            if (diff < limit) {
+              setCanClaim(false);
+              setTimeLeft(limit - diff);
+            } else {
+              setCanClaim(true);
+            }
+          } else {
+            setCanClaim(true);
+          }
+        }
+        setIsLoading(false);
+      });
+  }, [userId]);
+
+  // Timer
+  useEffect(() => {
+    if (!canClaim && timeLeft > 0) {
+      const interval = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev <= 1000) {
+            clearInterval(interval);
+            setCanClaim(true);
+            return 0;
+          }
+          return prev - 1000;
+        });
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [canClaim, timeLeft]);
+
+  const handleClaim = useCallback(async () => {
+    if (!userId || !canClaim || isLoading) return;
+
+    setIsLoading(true);
+    const now = new Date();
+    const { error: miningError } = await supabase
+      .from('users')
+      .update({ last_mining: now.toISOString() })
+      .eq('id', userId);
+
+    if (!miningError) {
+      const { error: balanceError } = await supabase.rpc('increment_balance', {
+        user_id_param: userId,
+        amount_param: coinsToClaim
+      });
+
+      if (!balanceError) {
+        setUserBalance((prev) => (prev !== null ? prev + coinsToClaim : coinsToClaim));
+        setCanClaim(false);
+        setTimeLeft(24 * 60 * 60 * 1000);
+        setLastClaimTime(now.getTime());
+      }
+    }
+
+    setIsLoading(false);
+  }, [userId, canClaim, coinsToClaim, isLoading]);
+
+  const formatTime = (ms: number) => {
+    const s = Math.floor(ms / 1000);
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+  };
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <Image 
-            src="/assets/smart-coin-logo.png" 
-            alt="Smart Coin" 
-            width={120} 
-            height={120} 
-            className="mx-auto mb-4"
-          />
-          <h1 className="text-3xl font-bold gold-text">Smart Coin</h1>
-          <p className="text-gray-400 mt-2">منصة التعدين الذكية</p>
-          <p className="text-gray-300 mt-4 text-sm max-w-sm mx-auto">نحن فخورون بالإعلان عن استثمارات بقيمة 350 مليون دولار لدعم رؤيتنا. نسعى لنصبح منصة لا مركزية رائدة لتداول العملات المشفرة، وستكون عملتنا الرقمية جزءًا أساسيًا من نظام الدفع داخل المنصة.</p>
-        </div>
+    <div className="min-h-screen bg-background p-6 text-center text-foreground flex flex-col items-center justify-center">
+      <div className="bg-white dark:bg-[#111] rounded-2xl shadow-lg p-6 w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-4 text-gold">🎯 التعدين اليومي</h2>
+        <p className="mb-4 text-muted-foreground">احصل على عملاتك المجانية كل 24 ساعة!</p>
 
-        <div className="card mb-6">
-          <h2 className="text-xl font-bold mb-4 text-center">اختر طريقة تسجيل الدخول المفضلة لديك</h2>
-          
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg mb-2">تسجيل الدخول عبر تيليجرام</h3>
-              <p className="text-sm text-gray-400 mb-3">
-                قم بتسجيل الدخول باستخدام حساب تيليجرام الخاص بك. سيتم إرسال رمز تحقق إلى بوت تيليجرام الخاص بنا.
-              </p>
-              <div id="telegram-login" className="flex justify-center mt-2">
-                <script
-                  async
-                  src="https://telegram.org/js/telegram-widget.js?7"
-                  data-telegram-login="SMARtcoinNbot"  // <-- غيّر إلى معرف البوت الخاص بك
-                  data-size="large"
-                  data-userpic="true"
-                  data-radius="10"
-                  data-auth-url="https://smart-en.vercel.app/api/auth/telegram/route.js"  // تأكد من المسار الصحيح
-                  data-request-access="write"
-                ></script>
-              </div>
-
-            </div>
-            
-            <div className="border-t border-gray-700 pt-6">
-              <h3 className="text-lg mb-2">تسجيل الدخول عبر محفظة TON</h3>
-              <p className="text-sm text-gray-400 mb-3">
-                قم بتسجيل الدخول باستخدام محفظة TON الخاصة بك. سيتم التحقق من هويتك عبر توقيع رسالة بمحفظتك.
-              </p>
-              <button className="secondary-button w-full">
-                <SiTon size={20} />
-                <span>تسجيل الدخول عبر محفظة TON</span>
-              </button>
-            </div>
+        {isLoading ? (
+          <p className="text-sm text-gray-500">جار التحميل...</p>
+        ) : canClaim ? (
+          <button
+            onClick={handleClaim}
+            className="primary-button w-full py-3 text-lg flex justify-center items-center gap-2"
+          >
+            <FaCoins />
+            احصل على {coinsToClaim} عملة
+          </button>
+        ) : (
+          <div className="space-y-2">
+            <p className="text-muted-foreground">لقد قمت بالتعدين اليوم.</p>
+            <p className="text-muted-foreground">الوقت المتبقي:</p>
+            <p className="text-xl font-semibold text-primary">{formatTime(timeLeft)}</p>
+            <button className="secondary-button w-full py-3 text-lg" disabled>
+              المطالبة غدًا
+            </button>
           </div>
-        </div>
-        
-        <div className="text-center">
-          <p className="text-sm text-gray-400">
-            بالتسجيل، أنت توافق على <Link href="/terms" className="text-primary-gold">شروط الاستخدام</Link> و <Link href="/privacy" className="text-primary-gold">سياسة الخصوصية</Link>
+        )}
+
+        {userBalance !== null && (
+          <p className="mt-4 text-sm text-muted-foreground">
+            رصيدك الحالي: <span className="font-semibold text-gold">{userBalance}</span> عملة
           </p>
-        </div>
+        )}
+
+        <Link href="/dashboard" className="block mt-6 text-sm underline text-blue-500">
+          العودة إلى الصفحة الرئيسية
+        </Link>
       </div>
     </div>
   );
 }
-
